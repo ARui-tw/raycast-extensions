@@ -51,9 +51,9 @@ export function ActionOnOpenLinkApp(props: {
         {isCustom && (
           <>
             <Action
-              title="Remove from Preferred"
+              title="Remove from Favorites"
               icon={Icon.StarDisabled}
-              shortcut={{ modifiers: ["shift", "cmd"], key: "p" }}
+              shortcut={{ modifiers: ["ctrl"], key: "x" }}
               onAction={async () => {
                 const _openLinkApplications = [...openLinkApplications];
                 _openLinkApplications.splice(index, 1);
@@ -76,7 +76,7 @@ export function ActionOnOpenLinkApp(props: {
                     await clearRank(openLinkApplication, openLinkApplications);
                     setRefresh(Date.now());
                     await showToast(Toast.Style.Success, `Rank of ${openLinkApplication.name} Reset!`);
-                  }
+                  },
                 );
               }}
             />
@@ -94,12 +94,15 @@ export function ActionOnOpenLinkApp(props: {
                     await clearAllRank(openLinkApplications);
                     setRefresh(Date.now());
                     await showToast(Toast.Style.Success, "Rank of All Reset!");
-                  }
+                  },
                 );
               }}
             />
           </>
         )}
+      </ActionPanel.Section>
+      <ActionPanel.Section>
+        <Action.ToggleQuickLook shortcut={{ modifiers: ["cmd"], key: "y" }} />
       </ActionPanel.Section>
       <ActionOpenPreferences />
     </ActionPanel>

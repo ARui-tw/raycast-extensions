@@ -2,7 +2,8 @@ import { GetQueueAttributesCommand, ListQueuesCommand, PurgeQueueCommand, SQSCli
 import { ActionPanel, List, Action, confirmAlert, Toast, showToast, Icon } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import AWSProfileDropdown from "./components/searchbar/aws-profile-dropdown";
-import { resourceToConsoleLink } from "./util";
+import { isReadyToFetch, resourceToConsoleLink } from "./util";
+import { AwsAction } from "./components/common/action";
 
 export default function SQS() {
   const { data: queues, error, isLoading, revalidate } = useCachedPromise(fetchQueues);
@@ -51,13 +52,12 @@ function SQSQueue({ queue }: { queue: string }) {
 
   return (
     <List.Item
-      id={queue}
       key={queue}
       title={queue.slice(queue.lastIndexOf("/") + 1)}
       icon={"aws-icons/sqs.png"}
       actions={
         <ActionPanel>
-          <Action.OpenInBrowser title="Open in Browser" url={resourceToConsoleLink(queue, "AWS::SQS::Queue")} />
+          <AwsAction.Console url={resourceToConsoleLink(queue, "AWS::SQS::Queue")} />
           <Action.CopyToClipboard title="Copy Queue URL" content={queue} />
           <Action.CopyToClipboard title="Copy Path" content={queue} />
           <Action icon={Icon.Trash} title="Purge Queue" onAction={handlePurgeQueueAction} />
@@ -72,7 +72,7 @@ function SQSQueue({ queue }: { queue: string }) {
 }
 
 async function fetchQueues(token?: string, queues?: string[]): Promise<string[]> {
-  if (!process.env.AWS_PROFILE) return [];
+  if (!isReadyToFetch()) return [];
   const { NextToken, QueueUrls } = await new SQSClient({}).send(new ListQueuesCommand({ NextToken: token }));
   const combinedQueues = [...(queues ?? []), ...(QueueUrls ?? [])];
 
@@ -88,7 +88,7 @@ async function fetchQueueAttributes(queueUrl: string) {
     new GetQueueAttributesCommand({
       QueueUrl: queueUrl,
       AttributeNames: ["ApproximateNumberOfMessages"],
-    })
+    }),
   );
 
   return Attributes;

@@ -10,14 +10,19 @@ import React from "react";
 export const searchBarPlaceholder = (inputText: ItemInput) => {
   switch (inputText.type) {
     case ItemType.TEXT:
-      return "Search " + inputText.type.toLowerCase() + " in";
+      return "Search 「 " + searchContent(inputText) + " 」 in";
     case ItemType.URL:
-      return "Open " + inputText.type.toLowerCase() + " in";
+      return "Open 「 " + searchContent(inputText) + " 」 in";
     case ItemType.EMAIL:
-      return "Email " + inputText.type.toLowerCase() + " in";
+      return "Email 「 " + searchContent(inputText) + " 」 in";
     case ItemType.NULL:
       return "Detect link by pressing ⏎";
   }
+};
+
+export const searchContent = (inputText: ItemInput) => {
+  const suffix = inputText.content.length >= 40 ? " ..." : "";
+  return inputText.content.substring(0, 40) + suffix;
 };
 //list item
 export const actionTitle = (inputText: ItemInput, applicationName: string) => {
@@ -49,7 +54,7 @@ export const actionIcon = (inputText: ItemInput) => {
 export async function actionOnApplicationItem(
   inputText: ItemInput,
   app: OpenLinkApplication,
-  setRefresh: React.Dispatch<React.SetStateAction<number>>
+  setRefresh: React.Dispatch<React.SetStateAction<number>>,
 ) {
   if (inputText.type != ItemType.NULL) {
     switch (inputText.type) {
@@ -123,7 +128,7 @@ export function searchEngineURLBuilder(itemInput: ItemInput): string {
 export async function upBrowserRank(
   itemInput: ItemInput,
   browser: OpenLinkApplication,
-  browsers: OpenLinkApplication[]
+  browsers: OpenLinkApplication[],
 ) {
   browsers.map((val, index) => {
     if (val.name == browser.name) {
