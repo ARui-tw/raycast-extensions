@@ -6,11 +6,11 @@ import { Item } from "../types";
 import {
   getCategoryIcon,
   actionsForItem,
-  usePasswords,
   useAccount,
   CommandLineMissingError,
   ConnectionError,
   ExtensionError,
+  usePasswords2,
 } from "../utils";
 import { Error as ErrorGuide } from "./Error";
 import { ItemActionPanel } from "./ItemActionPanel";
@@ -20,8 +20,12 @@ export function Items({ flags }: { flags?: string[] }) {
   const [category, setCategory] = useCachedState<string>("selected_category", DEFAULT_CATEGORY);
   const [passwords, setPasswords] = useState<Item[]>([]);
 
-  const { data: items, error: itemsError, isLoading: itemsIsLoading } = usePasswords(flags);
   const { data: account, error: accountError, isLoading: accountIsLoading } = useAccount();
+  const {
+    data: items,
+    error: itemsError,
+    isLoading: itemsIsLoading,
+  } = usePasswords2({ flags, account: account?.account_uuid ?? "", execute: !accountError && !accountIsLoading });
 
   useMemo(() => {
     if (!items) return;
@@ -76,6 +80,7 @@ export function Items({ flags }: { flags?: string[] }) {
                     : {},
                   { text: item.vault?.name },
                 ]}
+                keywords={item.additional_information ? [item.additional_information] : []}
                 actions={<ItemActionPanel account={account} item={item} actions={actionsForItem(item)} />}
               />
             ))

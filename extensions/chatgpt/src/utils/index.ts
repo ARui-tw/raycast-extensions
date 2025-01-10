@@ -33,7 +33,11 @@ function limitConversationLength(chats: Chat[]) {
 }
 
 export function chatTransformer(chat: Chat[], prompt: string): Message[] {
-  const messages: Message[] = [{ role: "system", content: prompt }];
+  const messages: Message[] = [];
+  if (prompt !== "") {
+    // only add system prompt if it's not empty
+    messages.push({ role: "system", content: prompt });
+  }
   const limitedChat = limitConversationLength(chat);
   limitedChat.forEach(({ question, answer }) => {
     messages.push({ role: "user", content: question });
@@ -79,7 +83,13 @@ export const imgFormat = (file: string) => {
   return `data:${type};base64,${fs.readFileSync(replace).toString("base64")}`;
 };
 
-export const buildUserMessage = (question: string, files: string[]) => {
+export const buildUserMessage = (question: string, files?: string[]) => {
+  if (!files || files.length === 0) {
+    // If there is no file, return the question string directly
+    return question;
+  }
+
+  // If there are files, create an array
   const content: ChatCompletionContentPart[] = [
     {
       type: "text",
@@ -96,5 +106,18 @@ export const buildUserMessage = (question: string, files: string[]) => {
       },
     });
   });
+
   return content;
+};
+
+export const toUnit = (size: number) => {
+  const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  let unitIndex = 0;
+  let unit = units[unitIndex];
+  while (size >= 1024) {
+    size /= 1024;
+    unitIndex++;
+    unit = units[unitIndex];
+  }
+  return `${size.toFixed(2)} ${unit}`;
 };
