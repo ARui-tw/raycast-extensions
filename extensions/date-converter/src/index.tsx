@@ -2,6 +2,11 @@ import { Clipboard, ActionPanel, List, Action, getPreferenceValues } from "@rayc
 import * as chrono from "chrono-node";
 import { useMemo, useState } from "react";
 import "@total-typescript/ts-reset";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
+
+TimeAgo.addDefaultLocale(en);
+const timeAgo = new TimeAgo("en-US");
 
 interface LabeledDate {
   label?: string;
@@ -19,11 +24,13 @@ interface DateFormatter {
 interface Preferences {
   defaultFormat: string;
   copyAction: "copy" | "paste" | "both";
+  hour24: boolean;
 }
 
-const humanFormatter = new Intl.DateTimeFormat([], {
+const humanFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: "full",
-  timeStyle: "short",
+  timeStyle: "medium",
+  hour12: !getPreferenceValues<Preferences>().hour24,
 });
 
 const DATE_FORMATS: DateFormatter[] = [
@@ -53,6 +60,10 @@ const DATE_FORMATS: DateFormatter[] = [
   },
 ];
 
+function isHex(query: string) {
+  return /^0x[0-9a-f]+$/i.test(query);
+}
+
 function parseMachineReadableDate(query: string): LabeledDate | undefined {
   const parsedDate = new Date(query);
   const isIso = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(query);
@@ -63,6 +74,7 @@ function parseMachineReadableDate(query: string): LabeledDate | undefined {
       human: false,
     };
   }
+
   const isNanoSecondTimestamp = /^\d{19}$/.test(query);
   if (isNanoSecondTimestamp) {
     return {
@@ -80,7 +92,12 @@ function parseMachineReadableDate(query: string): LabeledDate | undefined {
     };
   }
 
-  let timestamp = parseInt(query, 10);
+  let base = 10;
+  if (isHex(query)) {
+    base = 16;
+  }
+
+  let timestamp = parseInt(query, base);
 
   if (!isNaN(timestamp) && timestamp > 1000000) {
     let seconds = false;
@@ -124,6 +141,8 @@ function getResults(query: string): LabeledDate[] {
       date: new Date(x.date),
     }));
   }
+
+  query = query.trim();
 
   const machine = parseMachineReadableDate(query);
   const human = chrono.parse(query).map((x) => ({ date: x.date(), human: true, label: x.text }));
@@ -183,7 +202,7 @@ export default function Command() {
         <List.Item
           key={date.toISOString()}
           title={humanFormatter.format(date)}
-          subtitle={label}
+          subtitle={`${label} - ${timeAgo.format(date)}`}
           actions={
             <ActionPanel>
               {getSortedFormats({ human }).map(({ id, title, format }) => (

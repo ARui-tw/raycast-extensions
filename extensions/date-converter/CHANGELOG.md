@@ -1,5 +1,13 @@
 # Date Converter Changelog
 
+## [Update] - 2025-01-03
+
+- Support hexadecimal numbers for seconds/ms
+
+## [Update] - 2024-05-19
+
+- 24h time format support.
+
 ## [Update] - 2024-05-10
 
 - Support microsecond and nanosecond timestamps.
