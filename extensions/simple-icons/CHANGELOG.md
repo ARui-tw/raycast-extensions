@@ -1,5 +1,22 @@
 # Brand Icons Changelog
 
+## [Fixes] - 2025-02-28
+
+- Fix a long prompt issue
+- Remove the unused function `aiSearch`
+- Bump all dependencies to the latest
+
+## [Maintenance & Improvements] - 2025-02-25
+
+- Add support for viewing release notes
+- Add support for copying SVG path
+- Replace `execa` with `nano-spawn`
+- Bump all dependencies to the latest
+
+## [Chore] - 2025-01-12
+
+- Improve searcher performance with `useMemo`
+
 ## [Maintenance] - 2025-01-07
 
 - Use `getIconSlug()` to keep slugs consistent
