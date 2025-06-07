@@ -23,7 +23,9 @@
     "jagadeesh_k",
     "scottlovegrove",
     "henningmu",
-    "FlohGro"
+    "FlohGro",
+    "dedalusj",
+    "william_sault"
   ],
   "commands": [
     {
@@ -107,6 +109,14 @@
           "type": "checkbox",
           "label": "Close window immediately",
           "description": "When enabled, the Raycast window is closed immediately, allowing you to carry on with other work.",
+          "default": false,
+          "required": false
+        },
+        {
+          "name": "autoCreateLabels",
+          "type": "checkbox",
+          "label": "Create labels automatically",
+          "description": "When enabled Raycast will parse labels and create them automatically.",
           "default": false,
           "required": false
         }
@@ -608,6 +618,14 @@
       "title": "Focus Label",
       "description": "Shared label name to apply to your focused task. No label will be applied if left empty.",
       "placeholder": "raycast-focus"
+    },
+    {
+      "name": "useConfetti",
+      "type": "checkbox",
+      "label": "Use confetti to celebrate task completion",
+      "description": "When enabled, completing a task will trigger a confetti celebration.",
+      "default": false,
+      "required": false
     }
   ],
   "dependencies": {

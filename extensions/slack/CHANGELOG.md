@@ -1,6 +1,14 @@
 # Slack Changelog
 
-## [New Emoji Features and Improvements] - {PR_MERGE_DATE}
+## [Fix Emoji Search Missing Scope Error] - 2025-05-28
+
+- Add missing `emoji:read` scope to fix "missing_scope" error when using Search Emojis command
+
+## [AI-Powered Emoji Search] - 2025-04-24
+
+- Enhanced the `Search Emojis` command with AI-powered search: If you can't find an emoji by name, describe what you're looking for and AI will suggest the most relevant Slack emojis.
+
+## [New Emoji Features and Improvements] - 2025-04-12
 
 - Add new `Search Emojis` command to browse and copy Slack emojis
 - Add `get-emojis` tool to fetch emojis with AI
