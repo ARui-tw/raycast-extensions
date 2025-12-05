@@ -78,7 +78,7 @@ export function CreateObjectForm({ draftValues, enableDrafts }: CreateObjectForm
   const selectedTypeKey = selectedTypeDef?.key ?? "";
   const hasSelectedSpaceIdAndType = Boolean(selectedSpaceId && selectedTypeKey);
 
-  const properties = selectedTypeDef?.properties.filter((p) => !Object.values(bundledPropKeys).includes(p.key)) || [];
+  const properties = selectedTypeDef?.properties?.filter((p) => !Object.values(bundledPropKeys).includes(p.key)) || [];
   const { tagsMap } = useTagsMap(
     selectedSpaceId,
     properties
@@ -185,7 +185,7 @@ export function CreateObjectForm({ draftValues, enableDrafts }: CreateObjectForm
 
         const response = await createObject(selectedSpaceId, request);
 
-        if (response.object?.id) {
+        if (response.object.id) {
           if (selectedListId) {
             const request: AddObjectsToListRequest = { objects: [response.object.id] };
             await addObjectsToList(selectedSpaceId, selectedListId, request);
@@ -229,9 +229,10 @@ export function CreateObjectForm({ draftValues, enableDrafts }: CreateObjectForm
     const url = "raycast://extensions/any/anytype/create-object";
 
     const defaults: Record<string, unknown> = {
-      space: selectedSpaceId,
-      type: selectedTypeId,
-      list: selectedListId,
+      spaceId: selectedSpaceId,
+      typeId: selectedTypeId,
+      templateId: selectedTemplateId,
+      listId: selectedListId,
       name: itemProps.name.value,
       icon: itemProps.icon.value,
       description: itemProps.description.value,
@@ -279,7 +280,7 @@ export function CreateObjectForm({ draftValues, enableDrafts }: CreateObjectForm
       }
     >
       <Form.Dropdown
-        id="space"
+        id="spaceId"
         title="Space"
         value={selectedSpaceId}
         onChange={(v) => {
@@ -300,7 +301,7 @@ export function CreateObjectForm({ draftValues, enableDrafts }: CreateObjectForm
       </Form.Dropdown>
 
       <Form.Dropdown
-        id="type"
+        id="typeId"
         title="Type"
         value={selectedTypeId}
         onChange={setSelectedTypeId}
@@ -314,7 +315,7 @@ export function CreateObjectForm({ draftValues, enableDrafts }: CreateObjectForm
       </Form.Dropdown>
 
       <Form.Dropdown
-        id="template"
+        id="templateId"
         title="Template"
         value={selectedTemplateId}
         onChange={setSelectedTemplateId}
@@ -334,7 +335,7 @@ export function CreateObjectForm({ draftValues, enableDrafts }: CreateObjectForm
       </Form.Dropdown>
 
       <Form.Dropdown
-        id="list"
+        id="listId"
         title="Collection"
         value={selectedListId}
         onChange={setSelectedListId}
